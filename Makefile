@@ -9,12 +9,13 @@ data:
 	python -m src.data.make_dataset --raw-dir data/raw --processed-dir data/processed
 
 train:
-	@echo "(placeholder) run training"
-	python -m src.models.train --features data/processed/train_features.parquet --output-dir experiments/results/baseline
+	@echo "Run training baseline & OOF"
+	python scripts/run_baseline.py --features data/processed/train_features.parquet --output experiments/results/baseline
+	python scripts/run_oof.py --features data/processed/train_features.parquet --output experiments/results/oof
 
 predict:
-	@echo "(placeholder) run predict"
-	python -m src.models.predict --model experiments/results/baseline/model.joblib --test data/processed/test.parquet --output submission.csv
+	@echo "Run test prediction"
+	python scripts/predict_testA.py --test-raw data/raw/testA.csv --train-processed data/processed/train.parquet --train-features data/processed/train_features.parquet --model-dir experiments/results/oof --sample data/raw/sample_submit.csv --output submission.csv
 
 clean:
 	rm -rf experiments/results/* data/interim/* data/processed/*
